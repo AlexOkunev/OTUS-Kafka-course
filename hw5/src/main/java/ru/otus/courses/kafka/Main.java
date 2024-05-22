@@ -5,10 +5,7 @@ import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.Topology;
-import org.apache.kafka.streams.kstream.Consumed;
-import org.apache.kafka.streams.kstream.KTable;
-import org.apache.kafka.streams.kstream.TimeWindows;
-import org.apache.kafka.streams.kstream.Windowed;
+import org.apache.kafka.streams.kstream.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +28,8 @@ public class Main {
                 .stream(TOPIC_EVENTS, Consumed.with(Serdes.String(), Serdes.String()))
                 .groupByKey()
                 .windowedBy(TimeWindows.ofSizeWithNoGrace(Duration.ofMinutes(5)))
-                .count();
+                .count()
+                .suppress(Suppressed.untilWindowCloses(Suppressed.BufferConfig.unbounded()));
 
         counts.toStream()
                 .foreach((k, v) -> log.info("Window: [{} - {}]. Key:{}, Count: {}", toLocalTime(k.window().start()), toLocalTime(k.window().end()), k.key(), v));
