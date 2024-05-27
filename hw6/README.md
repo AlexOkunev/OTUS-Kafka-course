@@ -79,3 +79,20 @@ curl http://localhost:8083/connectors/test-data-connector/status | jq
 ![topic-3](18-topic-3.png) \
 ![topic-4](19-topic-4.png) \
 ![topic-5](20-topic-5.png) 
+
+15. Удалить коннектор
+```bash
+curl -X DELETE http://localhost:8083/connectors/test-data-connector
+```
+![remove-connector](21-remove-connector.png)
+
+16. Остановить контейнеры и выполнить очистку
+```bash
+docker compose stop
+```
+```bash
+docker container prune -f
+```
+```bash
+docker volume prune -f
+```
